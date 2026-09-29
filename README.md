@@ -54,6 +54,18 @@ brew install --cask voiceink
 ### Build from Source
 As an open-source project, you can build VoiceInk yourself by following the instructions in [BUILDING.md](BUILDING.md). However, the compiled version includes additional benefits like automatic updates, priority support via Discord and email, and helps fund ongoing development.
 
+#### After Rebuilding
+macOS ties privacy permissions to an app's code signature, and an ad-hoc signed build gets a new signature every time it is rebuilt. The Accessibility and Input Monitoring permissions granted to the previous build therefore stop applying, even though System Settings may still show VoiceInk as allowed, and the recording shortcut silently stops working. After each rebuild, quit VoiceInk, replace the copy in `/Applications` with the new `VoiceInk.app`, and reset the stale permissions. Then open VoiceInk, grant Accessibility and Input Monitoring again in System Settings (the `open` commands below go straight to each pane), and finally quit and reopen VoiceInk: the app only installs its keyboard listener at launch, so the shortcut will not respond until it is restarted with the permissions in place.
+
+```shell
+tccutil reset Accessibility com.prakashjoshipax.VoiceInk
+tccutil reset ListenEvent com.prakashjoshipax.VoiceInk
+open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
+open "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent"
+```
+
+Signing local builds with a stable Apple Development certificate (`make local LOCAL_CODESIGN_IDENTITY="<SHA or name>"`, see [BUILDING.md](BUILDING.md)) avoids this: once granted, permissions survive rebuilds.
+
 ## Requirements
 
 - macOS 15.0 or later
