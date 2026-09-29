@@ -141,25 +141,12 @@ final class LicenseViewModel: ObservableObject {
         scheduleStateRefreshIfNeeded()
     }
 
-    var isLicensed: Bool {
-        licenseState == .licensed
-    }
-
     var hasVerifiedLicense: Bool {
         #if LOCAL_BUILD
             true
         #else
             isPersistentStateAvailable && storedLicenseKey != nil && licenseState == .licensed
         #endif
-    }
-
-    var canUseApp: Bool {
-        switch licenseState {
-        case .licensed, .trial:
-            return true
-        case .unlicensed, .trialExpired:
-            return false
-        }
     }
 
     var diagnosticLicenseStatus: String {
