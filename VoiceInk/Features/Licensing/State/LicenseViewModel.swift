@@ -162,18 +162,6 @@ final class LicenseViewModel: ObservableObject {
         }
     }
 
-    var usageRestrictionMessage: String? {
-        switch licenseState {
-        case .unlicensed, .trialExpired:
-            return String(
-                format: String(localized: "Your trial has ended. Upgrade to VoiceInk Pro at %@"),
-                "tryvoiceink.com/buy"
-            )
-        case .trial, .licensed:
-            return nil
-        }
-    }
-
     var diagnosticLicenseStatus: String {
         if userDefaults.bool(forKey: pendingRemovalKey) {
             return "License Removed (Local Cleanup Pending)"
