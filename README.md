@@ -40,12 +40,17 @@ VoiceInk is a native macOS application that transcribes what you say to text alm
 ### Build from Source
 As an open-source project, you can build VoiceInk yourself by following the instructions in [BUILDING.md](BUILDING.md). However, the original, compiled version available via Homebrew includes additional benefits like automatic updates, priority support via Discord and email, and helps fund ongoing development.
 
+#### Building in Xcode
+Running the `VoiceInk` scheme (⌘R) or building it (⌘B) uses the Debug configuration, which produces a separate `VoiceInk Dev.app` with its own bundle identifier, settings and permissions. To build the app you install instead, choose **Product → Build For → Profiling** (⇧⌘I): this builds the Release configuration without launching Instruments. Then open **Product → Show Build Folder in Finder** and copy `Products/Release/VoiceInk.app` to `/Applications`. Avoid switching the Run action to Release with Edit Scheme, as the scheme file is shared and the change would end up in commits.
+
 #### After Rebuilding
+This applies only to ad-hoc signed builds, such as `make local` without a signing identity. Builds signed with a development team, including the Xcode builds above, keep their permissions across rebuilds once granted.
+
 macOS ties privacy permissions to an app's code signature, and an ad-hoc signed build gets a new signature every time it is rebuilt. The Accessibility and Input Monitoring permissions granted to the previous build therefore stop applying, even though System Settings may still show VoiceInk as allowed, and the recording shortcut silently stops working. After each rebuild, quit VoiceInk, replace the copy in `/Applications` with the new `VoiceInk.app`, and reset the stale permissions. Then open VoiceInk, grant Accessibility and Input Monitoring again in System Settings (the `open` commands below go straight to each pane), and finally quit and reopen VoiceInk: the app only installs its keyboard listener at launch, so the shortcut will not respond until it is restarted with the permissions in place.
 
 ```shell
-tccutil reset Accessibility com.prakashjoshipax.VoiceInk
-tccutil reset ListenEvent com.prakashjoshipax.VoiceInk
+tccutil reset Accessibility com.github.chris-kobrzak.VoiceInk
+tccutil reset ListenEvent com.github.chris-kobrzak.VoiceInk
 open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
 open "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent"
 ```
